@@ -30,34 +30,45 @@ with open('input.txt', 'r', encoding='utf-8') as f_cars:
 
 print(data)
 
-column = 0
-minimal_queue = 0
+not_satisfied = 0
 
 for minute in range(1441):
     if minute == data[0][0]:
+
+        possible_options = []
         for elem in stations:
             if data[0][2] in elem.get('petrol_types'):
-                if elem.get('current_queue') <= minimal_queue:
-                    column = elem.get('c_number')
-                    minimal_queue = elem.get('current_queue')
+                if elem.get('current_queue') < elem.get('max_queue'):
+                    possible_options.append([elem.get('c_number'), elem.get('current_queue')])
 
-        for elem2 in stations:
-            if elem2.get('c_number') == column:
-                elem2['current_queue'] += 1
+        if len(possible_options) > 0:
+            result_option = sorted(possible_options, key=lambda item: item[1])[0]
+            column = result_option[0]
 
-        operation_time = math.ceil(data[0][1] / 10)
+            for elem2 in stations:
+                if elem2.get('c_number') == column:
+                    elem2['current_queue'] += 1
 
-        addition = random.randint(-1, 1)
+            operation_time = math.ceil(data[0][1] / 10)
 
-        if operation_time + addition > 0:
-            operation_time = operation_time + addition
+            addition = random.randint(-1, 1)
 
-        print(f'В {data[0][3]} новый клиент: {data[0][3]} {data[0][2]} {data[0][1]} '
-              f'{operation_time} встал в очередь к автомату №{column}')
-        for i in range(1, len(stations) + 1):
+            if operation_time + addition > 0:
+                operation_time = operation_time + addition
 
-            print(f'Автомат №{i} максимальная очередь: {stations[i-1].get("max_queue")} Марки бензина: '
-                  f'{" ".join(stations[i-1].get("petrol_types"))} ->{"*" * stations[i-1].get("current_queue")}')
+            print(f'В {data[0][3]} новый клиент: {data[0][3]} {data[0][2]} {data[0][1]} '
+                  f'{operation_time} встал в очередь к автомату №{column}')
+            for i in range(1, len(stations) + 1):
+                print(f'Автомат №{i} максимальная очередь: {stations[i - 1].get("max_queue")} Марки бензина: '
+                      f'{" ".join(stations[i - 1].get("petrol_types"))} ->{"*" * stations[i - 1].get("current_queue")}')
+
+        else:
+            not_satisfied += 1
+            print(f'В {data[0][3]} новый клиент: {data[0][3]} {data[0][2]} {data[0][1]} '
+                  f'{operation_time} не смог заправить автомобиль и покинул АЗС')
+            for i in range(1, len(stations) + 1):
+                print(f'Автомат №{i} максимальная очередь: {stations[i - 1].get("max_queue")} Марки бензина: '
+                      f'{" ".join(stations[i - 1].get("petrol_types"))} ->{"*" * stations[i - 1].get("current_queue")}')
 
         if len(data) > 1:
             data = data[1:]
