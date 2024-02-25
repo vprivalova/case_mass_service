@@ -1,3 +1,5 @@
+import random
+
 prices = {'АИ-80': 32, 'АИ-92': 49, 'АИ-95': 52, 'АИ-98': 65}
 
 
@@ -12,4 +14,9 @@ with open('initial_data.txt', 'r', encoding='utf-8') as f_data:
 print(stations)
 
 with open('input.txt', 'r') as f_cars:
-    pass
+    hour = 0
+    minute = 0
+    liters = 0
+    for minutes in range(1441):
+
+
