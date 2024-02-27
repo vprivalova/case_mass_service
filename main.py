@@ -116,4 +116,5 @@ revenue = 0
 for p_type in sold:
     revenue += sold[p_type] * prices[p_type]
 
-print(f'{ru.REVENUE_PER_DAY} - {revenue}')
+print(f'{ru.REVENUE_PER_DAY} - {revenue}', '\n')
+print(ru.CONCLUSIONS)
