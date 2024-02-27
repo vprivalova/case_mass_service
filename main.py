@@ -1,10 +1,11 @@
 import random
 import math
 import datetime
+import ru_local as ru
 
 
-prices = {'АИ-80': 32, 'АИ-92': 49, 'АИ-95': 52, 'АИ-98': 65}
-sold = {'АИ-80': 0, 'АИ-92': 0, 'АИ-95': 0, 'АИ-98': 0}
+prices = {ru.AI80: 32, ru.AI92: 49, ru.AI95: 52, ru.AI98: 65}
+sold = {ru.AI80: 0, ru.AI92: 0, ru.AI95: 0, ru.AI98: 0}
 
 
 with open('initial_data.txt', 'r', encoding='utf-8') as f_data:
@@ -12,7 +13,8 @@ with open('initial_data.txt', 'r', encoding='utf-8') as f_data:
     for line in f_data:
         line = line.rstrip()
         line = line.split(' ')
-        station = {'c_number': int(line[0]), 'max_queue': int(line[1]), 'petrol_types': line[2:], 'current_queue': 0, 'leave_time': []}
+        station = {'c_number': int(line[0]), 'max_queue': int(line[1]), 'petrol_types': line[2:],
+                   'current_queue': 0, 'leave_time': []}
 
         stations.append(station)
 
@@ -52,12 +54,14 @@ for minute in range(1441):
                     sold[petrol_type] += litres
 
                     past_operation = (elem0.get("leave_time"))[0][4]
-                    print(f'В {str(datetime.time(minute//60, minute%60))[:5]} клиент {past_time} {petrol_type} {litres} {past_operation} заправил свой автомобиль и покинул АЗС.')
+                    print(f'{ru.IN} {str(datetime.time(minute//60, minute%60))[:5]} {ru.CLIENT} {past_time} '
+                          f'{petrol_type} {litres} {past_operation} {ru.FUELING_DONE}.')
                     elem0["leave_time"] = elem0["leave_time"][1:]
 
                     for i in range(1, len(stations) + 1):
-                        print(f'Автомат №{i} максимальная очередь: {stations[i - 1].get("max_queue")} Марки бензина: '
-                              f'{" ".join(stations[i - 1].get("petrol_types"))} ->{"*" * stations[i - 1].get("current_queue")}')
+                        print(f'{ru.AUTOMAT} №{i} {ru.MAX_QUEUE}: {stations[i-1].get("max_queue")} {ru.PETROL_TYPES}: '
+                              f'{" ".join(stations[i - 1].get("petrol_types"))} '
+                              f'->{"*" * stations[i - 1].get("current_queue")}')
 
     if minute == data[0][0]:
 
@@ -81,23 +85,22 @@ for minute in range(1441):
             for elem2 in stations:
                 if elem2.get('c_number') == column:
                     elem2['current_queue'] += 1
-                    elem2['leave_time'].append([minute + operation_time, data[0][3], data[0][2], data[0][1], operation_time])
+                    elem2['leave_time'].append([minute + operation_time, data[0][3], data[0][2],
+                                                data[0][1], operation_time])
                     elem2['leave_time'].sort(key=lambda item: item[0])
 
-
-
-            print(f'В {data[0][3]} новый клиент: {data[0][3]} {data[0][2]} {data[0][1]} '
-                  f'{operation_time} встал в очередь к автомату №{column}')
+            print(f'{ru.IN} {data[0][3]} {ru.NEW_CLIENT}: {data[0][3]} {data[0][2]} {data[0][1]} '
+                  f'{operation_time} {ru.JOIN_QUEUE} №{column}')
             for i in range(1, len(stations) + 1):
-                print(f'Автомат №{i} максимальная очередь: {stations[i - 1].get("max_queue")} Марки бензина: '
+                print(f'{ru.AUTOMAT} №{i} {ru.MAX_QUEUE}: {stations[i - 1].get("max_queue")} {ru.PETROL_TYPES}: '
                       f'{" ".join(stations[i - 1].get("petrol_types"))} ->{"*" * stations[i - 1].get("current_queue")}')
 
         else:
             not_satisfied += 1
-            print(f'В {data[0][3]} новый клиент: {data[0][3]} {data[0][2]} {data[0][1]} '
-                  f'{operation_time} не смог заправить автомобиль и покинул АЗС')
+            print(f'{ru.IN} {data[0][3]} {ru.NEW_CLIENT}: {data[0][3]} {data[0][2]} {data[0][1]} '
+                  f'{operation_time} {ru.FUELING_NOT_DONE}')
             for i in range(1, len(stations) + 1):
-                print(f'Автомат №{i} максимальная очередь: {stations[i - 1].get("max_queue")} Марки бензина: '
+                print(f'{ru.AUTOMAT} №{i} {ru.MAX_QUEUE}: {stations[i - 1].get("max_queue")} {ru.PETROL_TYPES}: '
                       f'{" ".join(stations[i - 1].get("petrol_types"))} ->{"*" * stations[i - 1].get("current_queue")}')
 
         if len(data) > 1:
@@ -106,14 +109,13 @@ for minute in range(1441):
             break
 
 
-
-print(f'Уехавших недовольных - {not_satisfied}')
+print(f'{ru.LEFT_UNSATISFIED} - {not_satisfied}')
 
 for p_type0 in sold:
-    print(f'Продано за сутки по марке {p_type0} - {sold[p_type0]} литров')
+    print(f'{ru.SOLD_FOR_TYPE} {p_type0} - {sold[p_type0]} {ru.LITRES}')
 
 revenue = 0
 for p_type in sold:
     revenue += sold[p_type] * prices[p_type]
 
-print(f'Общая сумма продаж за день - {revenue}')
+print(f'{ru.REVENUE_PER_DAY} - {revenue}')
