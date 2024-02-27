@@ -40,10 +40,10 @@ for minute in range(1441):
         if len(elem0.get('leave_time')) > 0:
             if minute == (elem0.get('leave_time'))[0][0]:
                 counter = 0
-                for j in range(len(elem0.get('leave_time'))):
-                    if elem0.get('leave_time')[j][0] == minute:
+                for column in range(len(elem0.get('leave_time'))):
+                    if elem0.get('leave_time')[column][0] == minute:
                         counter += 1
-                for n in range(counter):
+                for _ in range(counter):
                     elem0['current_queue'] -= 1
                     past_time = (elem0.get("leave_time"))[0][1]
                     petrol_type = (elem0.get("leave_time"))[0][2]
