@@ -18,7 +18,6 @@ with open('initial_data.txt', 'r', encoding='utf-8') as f_data:
 
         stations.append(station)
 
-print(stations)
 
 with open('input.txt', 'r', encoding='utf-8') as f_cars:
     data = []
@@ -33,7 +32,6 @@ with open('input.txt', 'r', encoding='utf-8') as f_cars:
         line1.append(time_table)
         data.append(line1)
 
-print(data)
 
 not_satisfied = 0
 
